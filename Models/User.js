@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["superAdmin", "user",],
+      enum: ["superAdmin", "user"],
       default: "user",
     },
     pImage: {
@@ -40,12 +40,18 @@ const userSchema = mongoose.Schema(
         //required: true,
       },
     },
-    country:{type:String},
-    phone:{type:Number},
-    position:{type:String},
-    about:{type:String}
-
-
+    country: { type: String },
+    city: { type: String },
+    phone: { type: Number },
+    position: { type: String },
+    about: { type: String },
+    f_name: { type: String },
+    degree: { type: String },
+    university: { type: String },
+    edu_start: { type: Date },
+    edu_end: { type: Date },
+    user_type: { type: String, enum: ["developer", "hr"]},
+    github:{type:String}
   },
   {
     timestamps: true,

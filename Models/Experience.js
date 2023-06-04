@@ -8,8 +8,8 @@ const ExperienceSchema = mongoose.Schema({
   },
   role: { type: String, required: true },
   company: { type: String, require: true },
-  startDate: { type: Date },
-  endDate: { type: Date },
+  ex_start: { type: Date },
+  ex_end: { type: Date },
   description: { type: String },
 });
 module.exports = mongoose.model("Experience", ExperienceSchema);

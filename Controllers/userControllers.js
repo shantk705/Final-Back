@@ -16,18 +16,6 @@ const getUsers = asyncHandler(async (req, res) => {
   res.status(200).json(users);
 });
 
-// this function gets a user data
-// the route is GET/api/users/user
-const getUser = asyncHandler(async (req, res) => {
-  const { _id, name, email, role } = await User.findById(req.user.id);
-  res.status(200).json({
-    id: _id,
-    name: name,
-    email: email,
-    role: role,
-  });
-});
-
 // this function Registers a user
 // the route is POST/api/users
 const registerUser = asyncHandler(async (req, res) => {
@@ -60,6 +48,16 @@ const registerUser = asyncHandler(async (req, res) => {
     about: "",
     pImage: {},
     bgImage: {},
+    f_name: "",
+    position: "",
+    phone: "",
+    country: "",
+    user_type: "developer",
+    edu_start: "",
+    edu_end: "",
+    degree: "",
+    university: "",
+    github: "",
   });
 
   if (user) {
@@ -71,7 +69,6 @@ const registerUser = asyncHandler(async (req, res) => {
       role: user.role,
       pImage: user.pImage,
       bgImage: user.bgImage,
-      about: user.about,
     });
   } else {
     res.status(400);
@@ -100,36 +97,111 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const updateProf = asyncHandler(async (req, res) => {
-  let pImage = req.files.pImage[0].path;
-  let bgImage = req.files.bgImage[0].path;
-  const { about } = req.body;
-  // profileImage: ,
-  //   bgImage: ,
+  console.log("we are here");
+
+  const {
+    about,
+    f_name,
+    position,
+    city,
+    country,
+    phone,
+    edu_start,
+    edu_end,
+    degree,
+    university,
+    github,
+  } = req.body;
+
   let id = req.params.id;
   let profile = await User.findById(id);
   if (profile) {
-    const profileImage = await cloudinary.uploader.upload(pImage);
-    const backgroundImage = await cloudinary.uploader.upload(bgImage);
     profile.about = about;
-    (profile.bgImage = {
-      public_id: backgroundImage.public_id,
-      url: backgroundImage.secure_url,
-    }),
-      (profile.pImage = {
-        public_id: profileImage.public_id,
-        url: profileImage.secure_url,
-      });
+    profile.f_name = f_name;
+    profile.position = position;
+    profile.city = city;
+    profile.country = country;
+    profile.phone = phone;
+    profile.edu_start = edu_start;
+    profile.edu_end = edu_end;
+    profile.degree = degree;
+    profile.university = university;
+    profile.github = github;
+
     let result = await profile.save();
     res.status(201).send(result);
   } else {
-    res.status(400).send("something went wrong");
+    res.status(400).send("USER NOT FOUND ");
+  }
+});
+const updateimages = asyncHandler(async (req, res) => {
+  console.log("we are in images");
+  let profile = await User.findById(req.params.id);
+  console.log("profileis", profile);
+  if (profile) {
+    if (req.files.pImage) {
+      let pImage = req.files.pImage[0].path;
+      const profileImage = await cloudinary.uploader.upload(pImage);
+      profile.pImage = {
+        public_id: profileImage.public_id,
+        url: profileImage.secure_url,
+      };
+    }
+    if (req.files.bgImage) {
+      let bgImage = req.files.bgImage[0].path;
+      const backgroundImage = await cloudinary.uploader.upload(bgImage);
+      profile.bgImage = {
+        public_id: backgroundImage.public_id,
+        url: backgroundImage.secure_url,
+      };
+    }
+    let result = await profile.save();
+    res.status(201).send(result);
+  } else {
+    res.status(404).send("something went wrong");
+  }
+});
+const getProfile = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+
+  let user = await User.findOne({ _id: id });
+  if (user) {
+    res.status(201).send({
+      email: user.email,
+      position: user.position,
+      f_name: user.f_name,
+      phone: user.phone,
+      country: user.country,
+      city: user.city,
+      about: user.about,
+      edu_end: user.edu_end,
+      edu_start: user.edu_start,
+      degree: user.degree,
+      university: user.university,
+      pImage:user.pImage,
+      bgImage:user.bgImage
+    });
+  } else {
+    res.status(404).send("user not found ");
   }
 });
 
+
+const getP=asyncHandler(async(req,res)=>{
+  let id=req.params.id
+  let user=await User.findById(id)
+  if(user){
+    res.status(201).send(user.pImage.url)
+  }
+  res.status(400).send("user not found ")
+})
+
 module.exports = {
+  getProfile,
   registerUser,
   loginUser,
   updateProf,
   getUsers,
-  getUser,
+  updateimages,
+  getP,
 };

@@ -14,15 +14,21 @@ const {
   registerUser,
   loginUser,
   getUsers,
-  getUser,
-  updateProf
+  updateimages,
+  updateProf,
+  getProfile,
+  getP
 } = require("../Controllers/userControllers");
 
 
-router.get("/get", getUsers);
-router.get("/user", getUser);
+router.get("/getall", getUsers);
+router.get("/p/:id",getP)
+
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
-router.patch("/profile/:id",uploads.fields([{name:"pImage",maxCount:1},{name:"bgImage",maxCount:1}]),updateProf)
+router.patch("/profile/:id",updateProf)
+router.get("/getme/:id", getProfile)
+router.patch("/img/:id",uploads.fields([{name:"pImage",maxCount:1},{name:"bgImage",maxCount:1}]),updateimages)
+// ,uploads.fields([{name:"pImage",maxCount:1},{name:"bgImage",maxCount:1}]),
 
 module.exports = router;

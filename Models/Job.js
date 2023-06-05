@@ -8,10 +8,11 @@ const JobSchema= new mongoose.Schema({
         company:{type:String},
         location:{type:String},
         description:{type:String},
-        requirements:{type:String}
+        requirements:{type:String},
+        shift:{type:String},
 
 
         
 },{timestamps:true})
 
-module.exports = mongoose.model("Job", JobSchema);
+module.exports = mongoose.model("Job",JobSchema);

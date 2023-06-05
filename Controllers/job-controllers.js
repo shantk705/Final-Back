@@ -1,9 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const Job = require("../Models/Job.js");
 var mongoose = require("mongoose");
+const { find } = require("../Models/Job.js");
 
 const addJob = asyncHandler(async (req, res) => {
-  let { user_id, position, company, location, description, requirements } =
+  let { user_id, position, company, location, description, requirements ,shift} =
     req.body;
   if (
     !user_id ||
@@ -22,6 +23,7 @@ const addJob = asyncHandler(async (req, res) => {
     location,
     description,
     requirements,
+    shift,
   });
   if (response) {
     res.status(201).send("job posted succesfully");
@@ -39,7 +41,7 @@ const removeJob = asyncHandler(async (req, res) => {
 
 const updateJob = asyncHandler(async (req, res) => {
   let id = req.params.id;
-  let { position, company, location, description, requirements } = req.body;
+  let { position, company, location, description, requirements,shift } = req.body;
 
   let job = await Job.findById(id);
   if (job) {
@@ -48,6 +50,7 @@ const updateJob = asyncHandler(async (req, res) => {
     job.location = location;
     job.description = description;
     job.requirements = requirements;
+    job.shift=shift;
     let result = await job.save();
     if (result) {
       res.status(201).send("job post updated successfully");
@@ -74,11 +77,22 @@ const getMyJobs = asyncHandler(async (req, res) => {
   }else{res.status(200).send("you dont have any posts yet ")}
 });
 
+const getJobDesc=asyncHandler(async(req,res)=>{
+  let id =req.params.id
+  let findjob=await Job.findById(id).populate("user_id", "pImage f_name position email")
+
+  if(findjob){
+    res.status(200).send(findjob)
+
+  }else{res.status(400).send("job not found ")}
+})
+
 
 module.exports={
     getMyJobs,
     getJobs,
     addJob,
     updateJob,
-    removeJob
+    removeJob,
+    getJobDesc
 }

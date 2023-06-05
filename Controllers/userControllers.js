@@ -19,11 +19,11 @@ const getUsers = asyncHandler(async (req, res) => {
 // this function Registers a user
 // the route is POST/api/users
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, user_type } = req.body;
   // console.log(req.body)
   // console.log(pImage)
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !user_type) {
     res.status(400).send("please fill all fields");
     throw new Error("Please fill all fields");
   }
@@ -52,7 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
     position: "",
     phone: "",
     country: "",
-    user_type: "developer",
+    user_type: user_type,
     edu_start: "",
     edu_end: "",
     degree: "",
@@ -69,6 +69,7 @@ const registerUser = asyncHandler(async (req, res) => {
       role: user.role,
       pImage: user.pImage,
       bgImage: user.bgImage,
+      user_type:user.user_type,
     });
   } else {
     res.status(400);
@@ -79,7 +80,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // this function Authenticate a user
 // the route is POST/api/users/login
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password, userType } = req.body;
+  const { email, password,} = req.body;
   const user = await User.findOne({ email });
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(201).json({
@@ -87,7 +88,7 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       token: generateToken(user._id),
-      userType: user.userType,
+      user_type : user.user_type ,
     });
   } else if (!user) {
     res.status(420).send("This Email does not match any users");
@@ -97,8 +98,6 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const updateProf = asyncHandler(async (req, res) => {
-  console.log("we are here");
-
   const {
     about,
     f_name,
@@ -178,23 +177,22 @@ const getProfile = asyncHandler(async (req, res) => {
       edu_start: user.edu_start,
       degree: user.degree,
       university: user.university,
-      pImage:user.pImage,
-      bgImage:user.bgImage
+      pImage: user.pImage,
+      bgImage: user.bgImage,
     });
   } else {
     res.status(404).send("user not found ");
   }
 });
 
-
-const getP=asyncHandler(async(req,res)=>{
-  let id=req.params.id
-  let user=await User.findById(id)
-  if(user){
-    res.status(201).send(user.pImage.url)
+const getP = asyncHandler(async (req, res) => {
+  let id = req.params.id;
+  let user = await User.findById(id);
+  if (user) {
+    res.status(201).send(user.pImage.url);
   }
-  res.status(400).send("user not found ")
-})
+  res.status(400).send("user not found ");
+});
 
 module.exports = {
   getProfile,

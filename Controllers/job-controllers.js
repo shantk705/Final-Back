@@ -130,7 +130,7 @@ console.log(existing)
               html:`<div>Greetings <div>
               <div>the user ${dev.name} has aplied to the position of ${thejob.position}</div>
               <div>use this email ${dev.email} to contact the developer or</div>
-              <p>Click <a href="http://localhost:3000/user/${user_id}">here</a> to see their profile in DevOps</p>
+              <p>Click <a href="https://devops-front.onrender.com/user/${user_id}">here</a> to see their profile in DevOps</p>
               `
             
           }

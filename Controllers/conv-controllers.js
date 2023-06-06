@@ -21,10 +21,11 @@ const getConv = asyncHandler(async (req, res) => {
     const conversation = await Conversation.find({
       members: { $in: [req.params.userId] },
     });
+    console.log(conversation)
     if (!conversation) {
       res.status(200).send("no conversation found");
     }
-    console.log(conversation.members[0])
+ 
    
     res.status(200).json(conversation);
   } catch (err) {

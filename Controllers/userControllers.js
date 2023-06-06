@@ -166,6 +166,7 @@ const getProfile = asyncHandler(async (req, res) => {
   let user = await User.findOne({ _id: id });
   if (user) {
     res.status(201).send({
+      id:user._id,
       email: user.email,
       position: user.position,
       f_name: user.f_name,
